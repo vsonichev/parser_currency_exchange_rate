@@ -1,7 +1,7 @@
 [project]
-name = "flowwow-parser"
+name = "parser_currency_exchange_rate"
 version = "0.1.0"
-description = "Add your description here"
+description = "Script for parsing current currency rates relative to USD"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
