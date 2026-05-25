@@ -18,12 +18,12 @@
 
 Для Windiws:
 ```
-.venv/Scripts/activate
+source .venv/Scripts/activate
 ```
 
 Для Unix/MacOS:
 ```
-.venv/bin/activate
+source .venv/bin/activate
 ```
 
 Также для запуска потребуется наличие предустановленных библиотек:
