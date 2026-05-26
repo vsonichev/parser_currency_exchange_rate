@@ -1,11 +1,11 @@
-import pandas as pd
-import requests
 import json
 import logging
 import os
 from datetime import datetime
-from dotenv import load_dotenv
 
+import pandas as pd
+import requests
+from dotenv import load_dotenv
 
 # Настройка базового логирования
 logging.basicConfig(
@@ -13,8 +13,8 @@ logging.basicConfig(
     format="%(asctime)s - %(levelname)s - %(message)s",
     handlers=[
         logging.FileHandler("script.log", encoding="utf-8"),
-        logging.StreamHandler()
-    ]
+        logging.StreamHandler(),
+    ],
 )
 
 
@@ -31,7 +31,7 @@ SAVE_DIR = "save_doc"
 def fetch_currency_data():
     """Получаем данные о курсах валют от API"""
     try:
-        logging.info(f"Запрос данных из API...")
+        logging.info("Запрос данных из API...")
         response = requests.get(API_URL, timeout=10)
         response.raise_for_status()
         data = response.json()
@@ -66,8 +66,11 @@ def create_dataframe(data):
 
         if not rates:
             raise ValueError("Поле 'conversion_rates' не найдено в ответе API")
-        
-        rows = [{"Currency (код валюты)": code, "Rate_to_USD (курс к доллару)": rate} for code, rate in rates.items()]
+
+        rows = [
+            {"Currency (код валюты)": code, "Rate_to_USD (курс к доллару)": rate}
+            for code, rate in rates.items()
+        ]
 
         df = pd.DataFrame(rows)
         logging.info(f"Данные успешно обработаны. Найдено валют: {len(df)}")
@@ -86,30 +89,31 @@ def save_results(df):
     xlsx_path = os.path.join(SAVE_DIR, "currency_rates.xlsx")
 
     # Сохранение в файлы
-    df.to_csv(csv_path, index=False, encoding='utf-8-sig')
-    df.to_excel(xlsx_path, index=False, engine='openpyxl')
+    df.to_csv(csv_path, index=False, encoding="utf-8-sig")
+    df.to_excel(xlsx_path, index=False, engine="openpyxl")
 
     logging.info(f"Файлы успешно сохранены в каталог '{SAVE_DIR}'")
 
 
 def main():
-        logging.info("=== Старт работы скрипта ===")
-        try:
-            # 1. Получение
-            json_data = fetch_currency_data()
-            
-            # 2. Бекап
-            save_json_backup(json_data)
-            
-            # 3. Парсинг
-            df = create_dataframe(json_data)
-            
-            # 4. Экспорт
-            save_results(df)
-            
-            logging.info("=== Скрипт завершил работу успешно ===")
-        except Exception as e:
-            logging.critical(f"Работа скрипта прервана из-за ошибки: {e}")
+    logging.info("=== Старт работы скрипта ===")
+    try:
+        # 1. Получение
+        json_data = fetch_currency_data()
+
+        # 2. Бекап
+        save_json_backup(json_data)
+
+        # 3. Парсинг
+        df = create_dataframe(json_data)
+
+        # 4. Экспорт
+        save_results(df)
+
+        logging.info("=== Скрипт завершил работу успешно ===")
+    except Exception as e:
+        logging.critical(f"Работа скрипта прервана из-за ошибки: {e}")
+
 
 if __name__ == "__main__":
     main()

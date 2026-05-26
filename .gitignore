@@ -11,4 +11,4 @@ wheels/
 .env
 
 # Logs
-# script.log
+script.log
